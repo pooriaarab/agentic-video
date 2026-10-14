@@ -1,6 +1,6 @@
 {
   "name": "agentic-video",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Preview video scene specifications and submit render requests to Shotstack or Creatomate with a Node.js SDK, CLI, and MCP tools.",
   "keywords": [
     "shotstack",
