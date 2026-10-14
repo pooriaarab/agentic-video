@@ -1,108 +1,62 @@
-# Agentic scaffold
+# Agentic video
 
-Canonical scaffold for a CLI plus library plus MCP server pack.
+Render one long video from a scene spec across vendors.
 
-Clone this repo to start a new pack. It gives one core with three
-faces: a terminal command, an npm import, and an MCP server.
+## Install
 
-## What you get
-
-- One core: brand config, logs, guards, routing, dry run, cost reports.
-- Three faces over that core: CLI, library, MCP server.
-- A frozen core contract, so packs share one API.
-- A worker entry and a wrangler sample for edge deploys.
-- Build, typecheck, and tests that pass from a fresh clone.
-
-## Quick start
+Use Node.js 18 or later.
 
 ```sh
-git clone https://github.com/pooriaarab/agentic-scaffold.git my-pack
-cd my-pack
-npm install
-npm run build
-npm run typecheck
-npm test
+npm install agentic-video
 ```
 
-Run the command:
+## Quickstart
+
+Preview is the default. It makes no network request and needs no key.
 
 ```sh
-node dist/cli.js summary --text "hello world hello"
+cat > scenes.json <<'JSON'
+{"scenes":[{"duration":8,"background":"#101827"},{"duration":12,"background":"#2563eb"}],"output":{"format":"mp4","resolution":"1920x1080"}}
+JSON
+npx agentic-video render --file scenes.json
 ```
 
-Call the library:
+Use the SDK with the same shape.
 
 ```js
-import { summarizeText } from "./dist/index.js";
-
-console.log(summarizeText("hello world hello"));
+import { renderVideo } from 'agentic-video';
+const receipt = await renderVideo({ spec: { scenes: [{ duration: 20 }] } });
+console.log(receipt);
 ```
 
-Start the MCP server:
+Use it for product explainers, training videos, and social recaps.
+
+## Live renders and keys
+
+Add `--live` to call a vendor. Set the matching key in your shell or secret store.
+
+| Vendor | Environment key |
+| --- | --- |
+| Shotstack | `SHOTSTACK_API_KEY` |
+| Creatomate | `CREATOMATE_API_KEY` |
 
 ```sh
-node dist/cli.js mcp
+npx agentic-video render --file scenes.json --vendor shotstack --live
+npx agentic-video render --file scenes.json --vendor creatomate --live
 ```
 
-## Three usecases
+Missing keys return a clear error. Vendor errors pass through unchanged.
+Short clips stay in `agentic-clip`.
 
-1. You run one text summary from the terminal.
-2. You import the summary function in a script.
-3. You let an agent call the same function as an MCP tool.
-
-## Clone checklist
-
-This repo is a template. Replace each slot in each file that holds it.
-
-- `__PACK_NAME__`: the directory name, like `my-pack`.
-- `__NPM_NAME__`: the npm name, like `agentic-<block>` (bare name, never @pooriaarab/ scoped unless the brief says scoped).
-- `__PACK_COMMAND__`: the terminal command, like `my-pack`.
-- `__PACK_DESCRIPTION__`: one plain sentence, under 100 chars.
-- `__PACK_KEYWORDS__`: plain keywords, like `notes, search, cli`.
-- `__GITHUB_USER__`: the repo owner, like `pooriaarab`.
-
-Slot files: `AGENTS.md`, `SKILL.md`, `RULES.md`, `llms.txt`,
-`server.json`, `.mcp.json`, `wrangler.jsonc`.
-
-Then rename the scaffold identity itself:
-
-- `package.json`: name, bin commands, mcpName. Remove `"private": true`.
-- `src/index.ts`: the `DEFAULT_BRAND` fields.
-- This file: the pitch and the examples above.
-
-At publish time, set `server.json` version to the npm version and
-`server.json` repository id from `gh api repos/OWNER/REPO --jq .id`.
-
-## Gates
-
-Run all three before you push a pack:
+## MCP
 
 ```sh
-npm run build && npm run typecheck && npm test
+npx agentic-video mcp
 ```
 
-Then run the real installed CLI once from a tarball:
-
-```sh
-npm pack
-npx --yes --package ./pooriaarab-agentic-scaffold-0.1.0.tgz agentic-pack summary --text "hello"
-```
-
-## Release flow
-
-Push to `main` for review. Merge to `release` to publish. The
-publish workflow ships only when the version is new.
-
-## Layout
-
-- `src/index.ts`: the library face.
-- `src/cli.ts`: the terminal face.
-- `src/mcp.ts`: the MCP server. `src/mcp-bin.ts` starts it.
-- `src/worker.ts`: the edge worker face.
-- `src/core.ts`: the shared core.
-- `agentic-core.d.ts`: the frozen contract.
-- `docs/agentic-core.md`: the contract in plain words.
+Tools are `render_video` and `get_cost_report`. `render_video` uses the
+same scene spec and defaults to `live: false`.
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. Copyright Pooria Arab.

@@ -1,0 +1,12 @@
+import { createGuards, createLogger, recordCost, GuardError, VendorError, type Guards, type Logger } from "agentic-core";
+import { CreatomateAdapter } from "./adapters/creatomate.js";
+import { previewId } from "./adapters/dry.js";
+import { ShotstackAdapter } from "./adapters/shotstack.js";
+import type { RenderRequest, VideoSpec, VideoVendor } from "./adapters/types.js";
+export type { RenderRequest, VideoSpec, VideoVendor, Scene } from "./adapters/types.js";
+export interface RenderReceipt { vendor: VideoVendor; renderId: string; dryRun: boolean; scenes: number; duration: number; at: string; }
+export function createVideoGuards(options: Parameters<typeof createGuards>[0] = {}): Guards { return createGuards(options); }
+export function validateSceneSpec(spec: VideoSpec): void { if (!spec || !Array.isArray(spec.scenes) || spec.scenes.length === 0) throw new VendorError("spec.scenes needs at least one scene"); for (const [index, scene] of spec.scenes.entries()) if (!Number.isFinite(scene.duration) || scene.duration <= 0) throw new VendorError(`scene ${index + 1} needs a positive duration`); }
+export function videoDuration(spec: VideoSpec): number { return spec.scenes.reduce((total, scene) => total + scene.duration, 0); }
+export async function renderVideo(request: RenderRequest & { guards?: Guards; logger?: Logger; now?: () => Date }): Promise<RenderReceipt> { validateSceneSpec(request.spec); const vendor = request.vendor ?? "shotstack"; const live = request.live === true; const guards = request.guards ?? createVideoGuards(); guards.checkDispatch(JSON.stringify(request.spec)); const duration = videoDuration(request.spec); const at = (request.now?.() ?? new Date()).toISOString(); const logger = request.logger ?? createLogger(); if (!live) { logger.info(`Preview video with ${request.spec.scenes.length} scenes`); return { vendor, renderId: previewId(request.spec), dryRun: true, scenes: request.spec.scenes.length, duration, at }; } const adapter = vendor === "shotstack" ? new ShotstackAdapter() : vendor === "creatomate" ? new CreatomateAdapter() : undefined; if (!adapter) throw new VendorError(`Unknown video vendor: ${vendor}`); const renderId = await adapter.render(request.spec, { apiKey: request.apiKey, fetchFn: request.fetchFn }); guards.recordDispatch(); recordCost({ kind: "dispatch", adapter: vendor, units: duration }); return { vendor, renderId, dryRun: false, scenes: request.spec.scenes.length, duration, at }; }
+export { GuardError, VendorError };
