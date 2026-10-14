@@ -1,20 +1,15 @@
 {
   "name": "agentic-video",
-  "version": "0.1.2",
-  "description": "Preview video scene specifications and submit render requests to Shotstack or Creatomate with a Node.js SDK, CLI, and MCP tools.",
+  "version": "0.1.1",
+  "description": "Render long-form video with Shotstack and Creatomate through a CLI, MCP, or agent.",
   "keywords": [
     "shotstack",
     "creatomate",
-    "video-rendering",
-    "scene-specification",
-    "video-preview",
-    "nodejs",
-    "typescript",
+    "long-form video",
+    "video rendering",
     "cli",
     "mcp",
-    "ai-agents",
-    "render-api",
-    "dry-run"
+    "agent"
   ],
   "license": "MIT",
   "author": "Pooria Arab",
