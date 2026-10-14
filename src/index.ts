@@ -1,47 +1,8 @@
 export { VERSION } from "./version.js";
-export {
-  defineBrand,
-  createLogger,
-  GuardError,
-  VendorError,
-  createGuards,
-  LocalRouterAdapter,
-  HttpRouterAdapter,
-  recordCost,
-  getCostReport,
-  resetCosts,
-  createDryRunResult,
-  dispatchText,
-  summarizeText,
-} from "./core.js";
-export type {
-  BrandConfig,
-  LogLevel,
-  Logger,
-  LoggerOptions,
-  CapsConfig,
-  QuietHoursConfig,
-  GuardsConfig,
-  Guards,
-  DispatchReceipt,
-  RouterAdapter,
-  HttpRouterOptions,
-  CostEntry,
-  CostReport,
-  DispatchOptions,
-  DispatchResult,
-  TopWord,
-  TextSummary,
-  SummarizeOptions,
-} from "./core.js";
-
-import { defineBrand, type BrandConfig } from "./core.js";
+export { renderVideo, createVideoGuards, validateSceneSpec, videoDuration, GuardError, VendorError } from "./video.js";
+export type { RenderRequest, RenderReceipt, VideoSpec, VideoVendor, Scene } from "./video.js";
+export { ShotstackAdapter } from "./adapters/shotstack.js";
+export { CreatomateAdapter } from "./adapters/creatomate.js";
+import { defineBrand, type BrandConfig } from "agentic-core";
 import { VERSION } from "./version.js";
-
-export const DEFAULT_BRAND: BrandConfig = defineBrand({
-  name: "Agentic pack",
-  command: "agentic-pack",
-  description: "Canonical scaffold for a CLI plus library plus MCP server pack.",
-  keywords: ["cli", "mcp", "scaffold", "starter", "typescript"],
-  version: VERSION,
-});
+export const DEFAULT_BRAND: BrandConfig = defineBrand({ name: "Agentic video", command: "agentic-video", description: "Render long videos from scene specs across vendors.", keywords: ["video", "render", "shotstack", "creatomate", "cli", "mcp"], version: VERSION });
