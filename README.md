@@ -1,6 +1,6 @@
 # Agentic video
 
-Render one long video from a scene spec across vendors.
+Agentic video renders long-form video with Shotstack and Creatomate. Use it for product explainers, training videos, and social recaps.
 
 ## Install
 
@@ -12,7 +12,7 @@ npm install agentic-video
 
 ## Quickstart
 
-Preview is the default. It makes no network request and needs no key.
+Preview is the default. It exits successfully, makes no network request, and needs no key.
 
 ```sh
 cat > scenes.json <<'JSON'
@@ -29,24 +29,16 @@ const receipt = await renderVideo({ spec: { scenes: [{ duration: 20 }] } });
 console.log(receipt);
 ```
 
-Use it for product explainers, training videos, and social recaps.
-
 ## Live renders and keys
 
-Add `--live` to call a vendor. Set the matching key in your shell or secret store.
+Add `--live` to render with a vendor. Set the matching key in your shell or secret store.
 
-| Vendor | Environment key |
-| --- | --- |
-| Shotstack | `SHOTSTACK_API_KEY` |
-| Creatomate | `CREATOMATE_API_KEY` |
+| Brand | Environment key | Live command |
+| --- | --- | --- |
+| Shotstack | `SHOTSTACK_API_KEY` | `npx agentic-video render --file scenes.json --vendor shotstack --live` |
+| Creatomate | `CREATOMATE_API_KEY` | `npx agentic-video render --file scenes.json --vendor creatomate --live` |
 
-```sh
-npx agentic-video render --file scenes.json --vendor shotstack --live
-npx agentic-video render --file scenes.json --vendor creatomate --live
-```
-
-Missing keys return a clear error. Vendor errors pass through unchanged.
-Short clips stay in `agentic-clip`.
+Missing keys return a clear error. Vendor errors pass through unchanged. Short clips stay in `agentic-clip`.
 
 ## MCP
 
@@ -54,8 +46,7 @@ Short clips stay in `agentic-clip`.
 npx agentic-video mcp
 ```
 
-Tools are `render_video` and `get_cost_report`. `render_video` uses the
-same scene spec and defaults to `live: false`.
+Tools are `render_video` and `get_cost_report`. `render_video` uses the same scene spec and defaults to `live: false`.
 
 ## License
 
